@@ -5,3 +5,8 @@
 .gdb
 .csv
 .xlsx
+.crashes2011.gdb/*
+.crashes2012.gdb/*
+.crashes2013.gdb/*
+.crashes2014.gdb/*
+.crashes2015.gdb/*

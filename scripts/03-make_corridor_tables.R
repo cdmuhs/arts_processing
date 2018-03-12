@@ -41,8 +41,9 @@ crash_r5 <- crash_r5 %>%
     mutate(fat_crash = ifelse(kabco == "FAT", 1, 0)) %>%
     mutate(inj_a_crash = ifelse(kabco == "INJ A", 1, 0))
 
-summary(crash_r5$bike_crash); summary(crash_r5$ped_crash)
-summary(crash_r5$rd_crash); summary(crash_r5$int_crash)
+
+# summary(crash_r5$bike_crash); summary(crash_r5$ped_crash)
+# summary(crash_r5$rd_crash); summary(crash_r5$int_crash)
 
 ####### Part 2: Corridors ##############################
 
@@ -70,7 +71,9 @@ makeCorridorTable = function(input_name){
                   Bicycle = sum(bike_crash),
                   Intersection = sum(int_crash),
                   Roadway_Departure = sum(rd_crash)
-        )
+        # ) %>%
+        # filter(Total_Crashes > 1) %>%
+        # filter(Fatal > 0 | Severe_Injury > 0)
     return(my_corridor_table)
 }
 

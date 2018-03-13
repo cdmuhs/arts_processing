@@ -15,7 +15,6 @@ here() # init working path
 crash <- read_csv(here("data", "crashes2011-2015.csv")) # all the data
 # load(here("data", "crash_r5_all.Rdata")) # loads 'crash_r5_all
 
-
 # Filter out crashes
 crash_tbl <- crash %>% 
     filter(reg_id == 5) %>% # Region 5 only
@@ -24,7 +23,6 @@ crash_tbl <- crash %>%
 # Rename kabco types
 crash_tbl$kabco <- recode_factor(crash_tbl$kabco, fatal = "FAT", inj_a = "INJ A",
                                 inj_b = "INJ B", inj_c = "INJ C", pdo = "PDO")
-
 
 # Make jurisdiction variable. If there is a city name, use the city.
 #   if there is no city name, assume unincorporated county area
@@ -46,13 +44,12 @@ crash_tbl <- crash_tbl %>%
     mutate(fat_crash = ifelse(kabco == "FAT", 1, 0)) %>%
     mutate(inj_a_crash = ifelse(kabco == "INJ A", 1, 0))
 
-
 # summary(crash_tbl$bike_crash); summary(crash_tbl$ped_crash)
 # summary(crash_tbl$rd_crash); summary(crash_tbl$int_crash)
 
 ####### Part 2: Systemic Corridors ##############################
 
-# Define columns of interest for spot location tables
+# Define columns of interest for systemic corridor location tables
 key_cols <- c("juris", "cnty_nm", "city_sect_nm", "st_full_nm", "kabco", 
               "bike_crash", "ped_crash", "int_crash", "rd_crash", 
               "fat_crash", "inj_a_crash")
@@ -90,12 +87,17 @@ mylist = unique(crash_tbl$juris)
 # iterate over jurisdictions
 result <- lapply(mylist, makeCorridorTable)
 
+# Assign 'NA' value if no fatal or inj A corridors in jurisdiction
 for (i in 1:length(result)) {
     if (nrow(result[[i]]) == 0) {
         result[[i]] = NA
         }
 }
-# result
+
+# Get list of street names
+# st_names <- sapply(result, '[[', 1)
+# str(st_names)
+# summary(st_names)
 
 # Commit non-NA list items to objects in working environment
 for (i in 1:length(result)) {
@@ -103,12 +105,8 @@ for (i in 1:length(result)) {
     print(paste("Object ", mylist[i], "added to environment."))
 }
 
-# save crash data table for script 04-systemic corridor crashes
-crash_tbl_r5 <- crash_tbl
-save(crash_tbl_r5, file = here("data", "crash_tbl_r5.Rdata"))
-
 # Remove crash data frames from environment
-rm(crash_tbl, crash_tbl_r5, crash)
+rm(crash_tbl, crash)
 
 ########### # Export to excel ##########################
 
@@ -141,8 +139,5 @@ save.xlsx(paste(Sys.Date(), "r5_systemic_corridors.xlsx", sep = "_"),
           Harney_County, Hermiston, Irrigon, La_Grande, Malheur_County, 
           Milton_Freewater, Morrow_County, Nyssa, Ontario, Pendleton, 
           Umatilla, Umatilla_County, Union_County, Wallowa_County, Weston)
-
-# Save corridor list for script 04-systemic corridor crashes
-save(outlist, file = here("data", "outlist_r5.Rdata"))
 
 ############# END ###############

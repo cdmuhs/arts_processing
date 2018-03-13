@@ -1,7 +1,7 @@
 ### C. Muhs, cdm@dksassociates.com
 ### March 2018
 ### ODOT ARTS
-### This script: make crash corridor tables
+### This script: make systemic crash corridor tables
 ################################################################################
 
 # Load libraries. Use install.packages("[package name]") to install them before loading
@@ -32,6 +32,11 @@ crash_tbl = crash_tbl %>%
     mutate(juris = case_when(is.na(city_sect_nm) ~ paste(cnty_nm, "County", sep = "_"), # if no city name...
                              TRUE ~ gsub('([[:punct:]])|\\s+','_', city_sect_nm))) # if there is city name, use it but with underscores not spaces
 
+# Many crashes do not have street listed. Add value from recre_rd_name if missing
+crash_tbl <- crash_tbl %>%
+    mutate(st_full_nm = case_when(is.na(st_full_nm) ~ recre_rd_nm,
+                                  TRUE ~ st_full_nm))
+
 # Add variables for whether the crash was certain types
 crash_tbl <- crash_tbl %>%
     mutate(bike_crash = ifelse(crash_typ_long_desc == "Pedalcyclist", 1, 0)) %>%
@@ -45,7 +50,7 @@ crash_tbl <- crash_tbl %>%
 # summary(crash_tbl$bike_crash); summary(crash_tbl$ped_crash)
 # summary(crash_tbl$rd_crash); summary(crash_tbl$int_crash)
 
-####### Part 2: Corridors ##############################
+####### Part 2: Systemic Corridors ##############################
 
 # Define columns of interest for spot location tables
 key_cols <- c("juris", "cnty_nm", "city_sect_nm", "st_full_nm", "kabco", 
@@ -61,7 +66,7 @@ makeCorridorTable = function(input_name){
         filter(juris == input_name) %>% # limit to input jurisdiction name
         select(-(juris)) # now remove jurisdiction column from the table
     
-    my_corridor_table <- mytable %>% 
+    my_corridor_table <- mytable %>% # define new second table
         group_by(st_full_nm) %>% # rearrange table by corridor
         # summarize by totals
         summarize(Total_Crashes = n(),
@@ -71,19 +76,26 @@ makeCorridorTable = function(input_name){
                   Bicycle = sum(bike_crash),
                   Intersection = sum(int_crash),
                   Roadway_Departure = sum(rd_crash)
-        # ) %>%
-        # filter(Total_Crashes > 1) %>%
-        # filter(Fatal > 0 | Severe_Injury > 0)
+        ) %>%
+        filter(Total_Crashes > 1) %>%
+        filter(Fatal > 0 | Severe_Injury > 0)
     return(my_corridor_table)
 }
 
-makeCorridorTable("Baker_County") # test
+# makeCorridorTable("Hermiston") # test
 
 # make list of jurisdictions
 mylist = unique(crash_tbl$juris)
 
 # iterate over jurisdictions
 result <- lapply(mylist, makeCorridorTable)
+
+for (i in 1:length(result)) {
+    if (nrow(result[[i]]) == 0) {
+        result[[i]] = NA
+        }
+}
+# result
 
 # Commit list items to objects in working environment
 for (i in 1:length(result)) {
@@ -92,7 +104,7 @@ for (i in 1:length(result)) {
 }
 
 # Remove crash data frames from environment
-rm(crash_tbl_all, crash)
+rm(crash_tbl, crash)
 
 ########### # Export to excel ##########################
 
@@ -120,14 +132,10 @@ outlist <- sort(names(Filter(isTRUE, eapply(.GlobalEnv, is.data.frame))))
 paste(as.character(outlist),collapse=", ",sep="")
 
 # Write excel file with a sheet for each jurisdiction
-save.xlsx("r5_corridor.xlsx", 
-          Adams, Athena, Baker_City, Baker_County, Boardman, Burns, 
-          Canyon_City, Cove, Echo, Elgin, Enterprise, Grant_County, 
-          Haines, Halfway, Harney_County, Heppner, Hermiston, Hines, 
-          Huntington, Imbler, Ione, Irrigon, Island_City, John_Day, 
-          Joseph, La_Grande, Malheur_County, Milton_Freewater, Morrow_County, 
-          Mt__Vernon, North_Powder, Nyssa, Ontario, Pendleton, Pilot_Rock, 
-          Prairie_City, Richland, Seneca, Stanfield, Umatilla, Umatilla_County, 
-          Union, Union_County, Vale, Wallowa, Wallowa_County, Weston)
+save.xlsx(paste(Sys.Date(), "r5_systemic_corridors.xlsx", sep = "_"),
+          Baker_City, Baker_County, Boardman, Burns, Grant_County, 
+          Harney_County, Hermiston, Irrigon, La_Grande, Malheur_County, 
+          Milton_Freewater, Morrow_County, Nyssa, Ontario, Pendleton, 
+          Umatilla, Umatilla_County, Union_County, Wallowa_County, Weston)
 
 ############# END ###############

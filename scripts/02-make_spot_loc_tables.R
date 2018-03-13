@@ -36,7 +36,7 @@ crash_tbl <- crash_tbl %>%
     mutate(st_full_nm = case_when(is.na(st_full_nm) ~ recre_rd_nm,
                                   TRUE ~ st_full_nm))
 
-####### Part 1: Spot locations ##############################
+####### Part 1: Hotspot locations ##############################
 
 # Define columns of interest for spot location tables
 key_cols <- c("crash_id", "juris", "cnty_nm", "city_sect_nm", "st_full_nm", 

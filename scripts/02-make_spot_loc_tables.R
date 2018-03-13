@@ -1,7 +1,7 @@
 ### C. Muhs, cdm@dksassociates.com
 ### March 2018
 ### ODOT ARTS
-### This script: make crash spot location tables
+### This script: make crash hotspot location tables
 ################################################################################
 
 # Load libraries. Use install.packages("[package name]") to install them before loading
@@ -76,7 +76,7 @@ for (i in 1:length(result)) {
 }
 
 # Remove crash data frames from environment
-rm(crash_tbl_all, crash_tbl)
+rm(crash, crash_tbl)
 
 ########### # Export to excel ##########################
 
@@ -104,11 +104,10 @@ outlist <- sort(names(Filter(isTRUE, eapply(.GlobalEnv, is.data.frame))))
 paste(as.character(outlist),collapse=", ",sep="")
 
 # Write excel file with a sheet for each jurisdiction
-save.xlsx(paste(Sys.Date(), "r5_spot.xlsx", sep = "_"), 
+save.xlsx(paste(Sys.Date(), "r5_hotspot_locations.xlsx", sep = "_"), 
           Baker_City, Baker_County, Boardman, Burns, Grant_County, Harney_County, 
           Hermiston, Irrigon, Joseph, La_Grande, Malheur_County, Milton_Freewater,
           Morrow_County, Nyssa, Ontario, Pendleton, Umatilla, Umatilla_County, 
           Union_County, Wallowa_County, Weston)
 
-# save.xlsx("c://temp/r5_spot_test.xlsx",
-#           Baker_City, Baker_County, Boardman, Burns, Grant_County, Harney_County, Hermiston, Irrigon, Joseph, La_Grande, Malheur_County, Milton_Freewater, Morrow_County, Nyssa, Ontario, Pendleton, Umatilla, Umatilla_County, Union_County, Wallowa_County, Weston)
+# END

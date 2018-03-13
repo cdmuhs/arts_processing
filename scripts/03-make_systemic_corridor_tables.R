@@ -97,14 +97,18 @@ for (i in 1:length(result)) {
 }
 # result
 
-# Commit list items to objects in working environment
+# Commit non-NA list items to objects in working environment
 for (i in 1:length(result)) {
     assign(mylist[i], result[[i]])
     print(paste("Object ", mylist[i], "added to environment."))
 }
 
+# save crash data table for script 04-systemic corridor crashes
+crash_tbl_r5 <- crash_tbl
+save(crash_tbl_r5, file = here("data", "crash_tbl_r5.Rdata"))
+
 # Remove crash data frames from environment
-rm(crash_tbl, crash)
+rm(crash_tbl, crash_tbl_r5, crash)
 
 ########### # Export to excel ##########################
 
@@ -137,5 +141,8 @@ save.xlsx(paste(Sys.Date(), "r5_systemic_corridors.xlsx", sep = "_"),
           Harney_County, Hermiston, Irrigon, La_Grande, Malheur_County, 
           Milton_Freewater, Morrow_County, Nyssa, Ontario, Pendleton, 
           Umatilla, Umatilla_County, Union_County, Wallowa_County, Weston)
+
+# Save corridor list for script 04-systemic corridor crashes
+save(outlist, file = here("data", "outlist_r5.Rdata"))
 
 ############# END ###############

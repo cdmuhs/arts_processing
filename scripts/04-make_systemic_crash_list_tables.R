@@ -15,7 +15,7 @@ crash <- read_csv(here("data", "crashes2011-2015.csv")) # all the data
 
 # Filter out crashes
 crash_tbl <- crash %>% 
-    filter(reg_id == 5) %>% # Region 5 only
+    filter(reg_id == 2) %>% # Region 2 only
     filter(is.na(rdwy_no)) # No state highways. (rdwy_no = "NA" when off state hwy)
 
 # Rename kabco types
@@ -70,11 +70,12 @@ makeCrashTableFromSystemic = function(input_name){
     mytable_sum <- mytable %>%
         filter(st_full_nm %in% my_corridor_table$st_full_nm) %>%
         select(-(fat_crash:inj_a_crash)) %>% # remove binary crash type variables
-        select(-(juris)) # remove jurisdiction 
+        select(-(juris)) %>% # remove jurisdiction 
+        arrange(st_full_nm, isect_st_full_nm) # sort by street name
     return(mytable_sum)
 }
 
-# makeCrashTableFromSystemic("Weston") # test
+# makeCrashTableFromSystemic("Baker_City") # test
 
 # make list of jurisdictions
 mylist = unique(crash_tbl$juris)
@@ -127,11 +128,15 @@ save.xlsx <- function (file, ...)
 outlist <- sort(names(Filter(isTRUE, eapply(.GlobalEnv, is.data.frame))))
 paste(as.character(outlist),collapse=", ",sep="")
 
+# R2 has list we aren't supposed to do. These ones we are supposed to do.
+r2_list <- c("Astoria", "Seaside", "St__Helens", "Rainier", "Newberg",
+             "Lincoln_City", "Lebanon", "Sweet_Home", "Cottage_Grove", "Stayton", 
+             "Dallas", "Independence")
+paste(as.character(r2_list),collapse=", ",sep="")
+
 # Write excel file with a sheet for each jurisdiction
-save.xlsx(paste(Sys.Date(), "r5_crashes_on_systemic_corridors.xlsx", sep = "_"),
-          Baker_City, Baker_County, Boardman, Burns, Grant_County, 
-          Harney_County, Hermiston, Irrigon, La_Grande, Malheur_County, 
-          Milton_Freewater, Morrow_County, Nyssa, Ontario, Pendleton, 
-          Umatilla, Umatilla_County, Union_County, Wallowa_County, Weston)
+save.xlsx(paste(Sys.Date(), "r2_crashes_on_systemic_corridors.xlsx", sep = "_"),
+          Astoria, Seaside, St__Helens, Rainier, Newberg, Lincoln_City, 
+          Lebanon, Sweet_Home, Cottage_Grove, Stayton, Dallas, Independence)
 
 ############# END ###############

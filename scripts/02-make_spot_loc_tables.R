@@ -18,7 +18,7 @@ crash <- read_csv(here("data", "crashes2011-2015.csv")) # all the data
 
 # Filter out crashes
 crash_tbl <- crash %>% 
-    filter(reg_id == 5) %>% # Region 5 only
+    filter(reg_id == 2) %>% # Region 2 only
     filter(kabco %in% c("inj_a", "fatal")) %>% # Fatal & injury A only
     filter(is.na(rdwy_no)) # No state highways. (rdwy_no = "NA" when off state hwy)
 
@@ -103,11 +103,17 @@ save.xlsx <- function (file, ...)
 outlist <- sort(names(Filter(isTRUE, eapply(.GlobalEnv, is.data.frame))))
 paste(as.character(outlist),collapse=", ",sep="")
 
+# R2 has list we aren't supposed to do. These ones we are supposed to do.
+r2_list <- c("Astoria", "Seaside", "St__Helens", "Rainier", "Newberg",
+             "Lincoln_City", "Lebanon", "Sweet_Home", "Cottage_Grove", "Stayton", 
+             "Dallas", "Independence")
+paste(as.character(r2_list),collapse=", ",sep="")
+
+
+
 # Write excel file with a sheet for each jurisdiction
-save.xlsx(paste(Sys.Date(), "r5_hotspot_locations.xlsx", sep = "_"), 
-          Baker_City, Baker_County, Boardman, Burns, Grant_County, Harney_County, 
-          Hermiston, Irrigon, Joseph, La_Grande, Malheur_County, Milton_Freewater,
-          Morrow_County, Nyssa, Ontario, Pendleton, Umatilla, Umatilla_County, 
-          Union_County, Wallowa_County, Weston)
+save.xlsx(paste(Sys.Date(), "r2_hotspot_locations.xlsx", sep = "_"), 
+          Astoria, Seaside, St__Helens, Rainier, Newberg, Lincoln_City, 
+          Lebanon, Sweet_Home, Cottage_Grove, Stayton, Dallas, Independence)
 
 # END

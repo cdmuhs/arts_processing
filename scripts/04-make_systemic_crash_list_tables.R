@@ -135,8 +135,9 @@ r2_list <- c("Astoria", "Seaside", "St__Helens", "Rainier", "Newberg",
 paste(as.character(r2_list),collapse=", ",sep="")
 
 # Write excel file with a sheet for each jurisdiction
-save.xlsx(paste(Sys.Date(), "r2_crashes_on_systemic_corridors.xlsx", sep = "_"),
-          Astoria, Seaside, St__Helens, Rainier, Newberg, Lincoln_City, 
-          Lebanon, Sweet_Home, Cottage_Grove, Stayton, Dallas, Independence)
+options(java.parameters = "-Xmx4g")
+save.xlsx(paste(Sys.Date(), "r2_crashes_on_systemic_corridors_allr2_5.xlsx", sep = "_"), 
+          Springfield, St__Helens, Stayton, Sweet_Home, Tillamook, Tillamook_County, 
+          Toledo, Veneta, Warrenton, Washington_County, Westfir, Willamina, Woodburn, Yamhill_County)
 
 ############# END ###############

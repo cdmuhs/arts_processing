@@ -140,8 +140,15 @@ r2_list <- c("Astoria", "Seaside", "St__Helens", "Rainier", "Newberg",
 paste(as.character(r2_list),collapse=", ",sep="")
 
 # Write excel file with a sheet for each jurisdiction
-save.xlsx(paste(Sys.Date(), "r2_systemic_corridors.xlsx", sep = "_"),
-          Astoria, Seaside, St__Helens, Rainier, Newberg, Lincoln_City, 
-          Lebanon, Sweet_Home, Cottage_Grove, Stayton, Dallas, Independence)
+save.xlsx(paste(Sys.Date(), "r2_systemic_corridors_allr2.xlsx", sep = "_"),
+          Albany, Astoria, Aumsville, Benton_County, Brownsville, Cannon_Beach, 
+          Clackamas_County, Clatsop_County, Coburg, Columbia_County, Corvallis, 
+          Cottage_Grove, Dallas, Dayton, Detroit, Dundee, Dunes_City, Eugene, 
+          Florence, Independence, Jefferson, Junction_City, Keizer, Lane_County, 
+          Lebanon, Lincoln_City, Lincoln_County, Linn_County, Marion_County, 
+          McMinnville, Mill_City, Millersburg, Newberg, Newport, Polk_County, 
+          Rainier, Salem, Seaside, Silverton, Springfield, St__Helens, Stayton, 
+          Sweet_Home, Tillamook, Tillamook_County, Toledo, Veneta, Warrenton, 
+          Washington_County, Westfir, Willamina, Woodburn, Yamhill_County)
 
 ############# END ###############

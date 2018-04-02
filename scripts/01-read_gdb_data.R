@@ -57,8 +57,3 @@ summary(as.factor(cr$kabco))
 out_path <- here("data", "crashes2011-2015.csv")
 write_csv(cr,
            path = out_path)
-
-# Save file of just R5
-crash_r5_all <- crash %>% 
-    filter(reg_id == 5)
-save(crash_r5_all, file = here("data", "crash_r5_all.Rdata"))

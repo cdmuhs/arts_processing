@@ -5,6 +5,8 @@
 *.gdb
 *.csv
 *.xlsx
+*/*.xlsx
+outputs/*.xlsx
 crashes2011.gdb/*
 crashes2012.gdb/*
 crashes2013.gdb/*

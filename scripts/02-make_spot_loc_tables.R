@@ -18,7 +18,7 @@ crash <- read_csv(here("data", "crashes2011-2015.csv")) # all the data
 
 # Filter out crashes
 crash_tbl <- crash %>% 
-    filter(reg_id == 2) %>% # Region 2 only
+    filter(reg_id == 1) %>% # Region 1 only
     filter(kabco %in% c("inj_a", "fatal")) %>% # Fatal & injury A only
     filter(is.na(rdwy_no)) # No state highways. (rdwy_no = "NA" when off state hwy)
 
@@ -30,6 +30,8 @@ crash_tbl$kabco <- recode_factor(crash_tbl$kabco, fatal = "FAT", inj_a = "INJ A"
 crash_tbl <- crash_tbl %>%
     mutate(juris = case_when(is.na(city_sect_nm) ~ paste(cnty_nm, "County", sep = "_"), # if no city name...
                              TRUE ~ gsub('([[:punct:]])|\\s+','_', city_sect_nm))) # if there is city name, use it but with underscores not spaces
+crash_tbl$juris <- gsub('([[:punct:]])|\\s+', '_', crash_tbl$juris) # Remove any remaining spaces in county name
+
 
 # Many crashes do not have street listed. Add value from recre_rd_name if missing
 crash_tbl <- crash_tbl %>%
@@ -54,7 +56,8 @@ makeSpotTable = function(input_name){
     mytable <- crash_tbl %>%  # define new table
         select(key_cols) %>% # use the columns in 'keycols'
         filter(juris == as.character(input_name)) %>% # limit to input jurisdiction name
-        select(-(juris)) # now remove jurisdiction column from the table
+        select(-(juris)) %>% # now remove jurisdiction column from the table
+        arrange(st_full_nm, isect_st_full_nm) # sort by street name
     return(mytable)
 }
 
@@ -103,25 +106,21 @@ save.xlsx <- function (file, ...)
 outlist <- sort(names(Filter(isTRUE, eapply(.GlobalEnv, is.data.frame))))
 paste(as.character(outlist),collapse=", ",sep="")
 
-# R2 has list we aren't supposed to do. These ones we are supposed to do.
-r2_list <- c("Astoria", "Seaside", "St__Helens", "Rainier", "Newberg",
-             "Lincoln_City", "Lebanon", "Sweet_Home", "Cottage_Grove", "Stayton", 
-             "Dallas", "Independence")
-paste(as.character(r2_list),collapse=", ",sep="")
-
-
+# # R2 has list we aren't supposed to do. These ones we are supposed to do.
+# r2_list <- c("Astoria", "Seaside", "St__Helens", "Rainier", "Newberg",
+#              "Lincoln_City", "Lebanon", "Sweet_Home", "Cottage_Grove", "Stayton", 
+#              "Dallas", "Independence")
+# paste(as.character(r2_list),collapse=", ",sep="")
 
 # Write excel file with a sheet for each jurisdiction
-save.xlsx(paste(Sys.Date(), "r2_hotspot_locations_allr2.xlsx", sep = "_"), 
-          Albany, Amity, Astoria, Aumsville, Bay_City, Benton_County, 
-          Brownsville, Cannon_Beach, Clackamas_County, Clatsop_County, Coburg, 
-          Columbia_County, Corvallis, Cottage_Grove, Creswell, Dallas, Dayton, 
-          Detroit, Dundee, Dunes_City, Eugene, Florence, Independence, Jefferson, 
-          Jefferson_County, Junction_City, Keizer, Lane_County, Lebanon, Lincoln_City, 
-          Lincoln_County, Linn_County, Lowell, Lyons, Marion_County, McMinnville, 
-          Mill_City, Millersburg, Newberg, Newport, Polk_County, Rainier, Rockaway_Beach, 
-          Salem, Seaside, Silverton, Springfield, St__Helens, Stayton, Sweet_Home, 
-          Tillamook, Tillamook_County, Toledo, Veneta, Warrenton, Washington_County, 
-          Westfir, Willamina, Woodburn, Yamhill_County)
+save.xlsx(here("outputs", paste(Sys.Date(), "r1_hotspot_locations.xlsx", sep = "_")), 
+          Barlow, Beaverton, Canby, Cascade_Locks, Clackamas_County, Cornelius, 
+          Damascus, Estacada, Fairview, Forest_Grove, Gladstone, Gresham, 
+          Happy_Valley, Hillsboro, Hood_River_County, Hood_River, King_City, 
+          Lake_Oswego, Marion_County, Maywood_Park, Milwaukie, Molalla, 
+          Multnomah_County, Oregon_City, Portland_Bridges, Portland_E__Burnside, 
+          Portland_N, Portland_NE, Portland_NW, Portland_SE, Portland_SW, 
+          Portland_W__Burnside, Sandy, Sherwood, Tigard, Troutdale, Tualatin, 
+          Washington_County, West_Linn, Wilsonville, Wood_Village)
 
 # END

@@ -1,5 +1,5 @@
 ### C. Muhs, cdm@dksassociates.com
-### March 2018
+### Apr 2018
 ### ODOT ARTS
 ### This script: make detailed tables from systemic crash corridors
 ################################################################################
@@ -15,7 +15,7 @@ crash <- read_csv(here("data", "crashes2011-2015.csv")) # all the data
 
 # Filter out crashes
 crash_tbl <- crash %>% 
-    filter(reg_id == 2) %>% # Region 2 only
+    filter(reg_id == 1) %>% # Region 1 only
     filter(is.na(rdwy_no)) # No state highways. (rdwy_no = "NA" when off state hwy)
 
 # Rename kabco types
@@ -27,6 +27,8 @@ crash_tbl$kabco <- recode_factor(crash_tbl$kabco, fatal = "FAT", inj_a = "INJ A"
 crash_tbl <- crash_tbl %>%
     mutate(juris = case_when(is.na(city_sect_nm) ~ paste(cnty_nm, "County", sep = "_"), # if no city name...
                              TRUE ~ gsub('([[:punct:]])|\\s+','_', city_sect_nm))) # if there is city name, use it but with underscores not spaces
+crash_tbl$juris <- gsub('([[:punct:]])|\\s+', '_', crash_tbl$juris) # Remove any remaining spaces in county name
+
 
 # Many crashes do not have street listed. Add value from recre_rd_name if missing
 crash_tbl <- crash_tbl %>%
@@ -128,16 +130,22 @@ save.xlsx <- function (file, ...)
 outlist <- sort(names(Filter(isTRUE, eapply(.GlobalEnv, is.data.frame))))
 paste(as.character(outlist),collapse=", ",sep="")
 
-# R2 has list we aren't supposed to do. These ones we are supposed to do.
-r2_list <- c("Astoria", "Seaside", "St__Helens", "Rainier", "Newberg",
-             "Lincoln_City", "Lebanon", "Sweet_Home", "Cottage_Grove", "Stayton", 
-             "Dallas", "Independence")
-paste(as.character(r2_list),collapse=", ",sep="")
+# # R2 has list we aren't supposed to do. These ones we are supposed to do.
+# r2_list <- c("Astoria", "Seaside", "St__Helens", "Rainier", "Newberg",
+#              "Lincoln_City", "Lebanon", "Sweet_Home", "Cottage_Grove", "Stayton", 
+#              "Dallas", "Independence")
+# paste(as.character(r2_list),collapse=", ",sep="")
 
 # Write excel file with a sheet for each jurisdiction
 options(java.parameters = "-Xmx4g")
-save.xlsx(paste(Sys.Date(), "r2_crashes_on_systemic_corridors_allr2_5.xlsx", sep = "_"), 
-          Springfield, St__Helens, Stayton, Sweet_Home, Tillamook, Tillamook_County, 
-          Toledo, Veneta, Warrenton, Washington_County, Westfir, Willamina, Woodburn, Yamhill_County)
+save.xlsx(here("outputs", paste(Sys.Date(), "r1_crashes_on_systemic_corridors.xlsx", sep = "_")),
+          Barlow, Beaverton, Canby, Cascade_Locks, Clackamas_County, Cornelius, 
+          Damascus, Estacada, Fairview, Forest_Grove, Gladstone, Gresham, 
+          Happy_Valley, Hillsboro, Hood_River, Hood_River_County, King_City, 
+          Lake_Oswego, Maywood_Park, Milwaukie, Molalla, Multnomah_County, 
+          Oregon_City, Portland_Bridges, Portland_E__Burnside, Portland_N, 
+          Portland_NE, Portland_NW, Portland_SE, Portland_SW, Portland_W__Burnside, 
+          Sandy, Sherwood, Tigard, Troutdale, Tualatin, Washington_County, 
+          West_Linn, Wilsonville, Wood_Village)
 
 ############# END ###############

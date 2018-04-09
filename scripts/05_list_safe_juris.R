@@ -1,5 +1,5 @@
 ### C. Muhs, cdm@dksassociates.com
-### March 2018
+### Apr 2018
 ### ODOT ARTS
 ### This script: list of jurisdictions w/o fatal or inj A crashes
 ################################################################################
@@ -19,10 +19,12 @@ crash <- read_csv(here("data", "crashes2011-2015.csv")) # all the data
 crash <- crash %>%
     mutate(juris = case_when(is.na(city_sect_nm) ~ paste(cnty_nm, "County", sep = "_"), # if no city name...
                              TRUE ~ gsub('([[:punct:]])|\\s+','_', city_sect_nm))) # if there is city name, use it but with underscores not spaces
+crash$juris <- gsub('([[:punct:]])|\\s+', '_', crash$juris) # Remove any remaining spaces in county name
+
 
 # Filter out crashes
 crash_tots <- crash %>% 
-    filter(reg_id == 5) %>% # filter for region number
+    filter(reg_id == 1) %>% # filter for region number
     filter(is.na(rdwy_no)) %>%
     group_by(juris) %>%
     summarize(num_of_crashes = n(),

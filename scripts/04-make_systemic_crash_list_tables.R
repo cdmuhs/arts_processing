@@ -136,16 +136,20 @@ paste(as.character(outlist),collapse=", ",sep="")
 #              "Dallas", "Independence")
 # paste(as.character(r2_list),collapse=", ",sep="")
 
-# Write excel file with a sheet for each jurisdiction
+# Set up processing with multiple cores
+library(parallel)
+library(doParallel)
+cluster <- makeCluster(detectCores() - 1) 
+registerDoParallel(cluster)
 options(java.parameters = "-Xmx4g")
-save.xlsx(here("outputs", paste(Sys.Date(), "r1_crashes_on_systemic_corridors.xlsx", sep = "_")),
-          Barlow, Beaverton, Canby, Cascade_Locks, Clackamas_County, Cornelius, 
-          Damascus, Estacada, Fairview, Forest_Grove, Gladstone, Gresham, 
-          Happy_Valley, Hillsboro, Hood_River, Hood_River_County, King_City, 
-          Lake_Oswego, Maywood_Park, Milwaukie, Molalla, Multnomah_County, 
-          Oregon_City, Portland_Bridges, Portland_E__Burnside, Portland_N, 
-          Portland_NE, Portland_NW, Portland_SE, Portland_SW, Portland_W__Burnside, 
-          Sandy, Sherwood, Tigard, Troutdale, Tualatin, Washington_County, 
-          West_Linn, Wilsonville, Wood_Village)
+
+# Write excel file with a sheet for each jurisdiction
+save.xlsx(here("outputs", paste(Sys.Date(), "r1_crashes_on_systemic_corridors_7.xlsx", sep = "_")), # Change title to your liking
+          Washington_County, West_Linn, Wilsonville, Wood_Village) # Paste the items in 'outlist' here
+
+
+# Return to single thread processing
+stopCluster(cluster)
+registerDoSEQ()
 
 ############# END ###############

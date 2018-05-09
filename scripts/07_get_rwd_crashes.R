@@ -37,6 +37,7 @@ crash_tbl <- crash %>%
     #                          "KERSHAW RD", "TILLER TRAIL HWY 227", "FOOTHILL BLVD", 
     #                          "HILLCREST RD", "GIBBON RD", "GRIFFIN LN", 
     #                          "UPPER RIVER RD")) %>%
+    # @CDM: remove crashes coded intersection or driveway or alley
     filter(juris == "Douglas_County") %>%
     filter(st_full_nm %in% c("LOOKINGGLASS RD", "BUCKHORN RD A", "OLD HWY 99 SOUTH",
                              "MELQUA RD", "TILLER TRAIL HWY")) %>%

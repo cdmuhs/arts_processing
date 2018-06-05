@@ -29,12 +29,14 @@ crash$juris <- gsub('([[:punct:]])|\\s+', '_', crash$juris) # Remove any remaini
 
 #### join crash table to the ids of interest to reduce it to a short list ####
 # read id list
-my_ids <- read_csv("C://temp/ids_ashland.csv")
+my_ids <- read_csv("C://temp/hillsboro_ids.csv")
 names(my_ids) <- "crash_id"
-crash <- crash %>% 
+crash_table <- 
+    crash %>% 
     inner_join(my_ids) %>%
-    arrange(st_full_nm, isect_st_full_nm, crash_dt)
+    # filter(tot_ped_cnt > 0 | tot_pedcycl_cnt > 0) %>% # limit to bike/ped crashes
+    arrange(st_full_nm, isect_st_full_nm, crash_dt) 
 
 ######### Export #########
-write.xlsx(crash, 
-           file = here("outputs", paste(Sys.Date(), "Ashland_crashes.xlsx", sep = "_")))
+write.xlsx(crash_table, 
+           file = here("outputs", paste(Sys.Date(), "Hillsboro_crashes.xlsx", sep = "_")))
